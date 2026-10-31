@@ -242,3 +242,29 @@ services/x/interface.ts   只被这个接口模块使用的类型
 判据就一条：**被 2 处以上用才进 `types/`**。否则 `types/` 会变成垃圾场，每个新概念都往里扔，最后没人知道某个类型为什么会存在。
 
 `types/` 过多时按功能分文件（`common.ts`、`order.ts`、`user.ts`），并有一个 `index.ts` 做入口。
+
+---
+
+## 11. 列表 key 不用 index
+
+```tsx
+// ✗ 用 index：列表增删/重排时，React 会错误复用 DOM，导致输入框值、勾选状态错位
+{items.map((item, index) => (
+  <li key={index}>{item.name}</li>
+))}
+
+// ✅ 用数据的稳定唯一标识
+{items.map((item) => (
+  <li key={item.id}>{item.name}</li>
+))}
+```
+
+**为什么不能用 index**：React 靠 `key` 判断哪些元素是同一个。用 index 时，删了第 2 项，原来第 3 项的 index 变成 2，React 会以为它没变，把旧 DOM 复用过来——如果那一项有输入框、勾选框，状态就串了。
+
+**key 怎么选**（按优先级）：
+
+1. 数据本身的唯一字段：`id`、`code`、`path`
+2. 稳定的业务字段：`type`、`name`（仅当该字段在列表内唯一且不变）
+3. 多个字段组合：`${item.from}-${item.to}`
+
+只有当列表是**静态的、不会增删重排、且每项没有内部状态**时，index 才勉强可用——但默认仍按"用 id"执行，避免后期列表一变就出 bug。

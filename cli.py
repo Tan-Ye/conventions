@@ -58,6 +58,7 @@ def cmd_install(args: argparse.Namespace) -> int:
             install_language(cwd, lang, version, dry_run=args.dry_run)
         )
 
+    gitignore_done = False
     for r in results:
         action = "（dry-run）" if args.dry_run else ""
         proj = "  + 新建 project 模板" if r.project_written else "  = project 已存在，未改动"
@@ -65,6 +66,9 @@ def cmd_install(args: argparse.Namespace) -> int:
             f"[install] {r.lang} ({r.version}){action}\n"
             f"  -> rules/{r.lang}.md\n{proj}"
         )
+        if r.gitignore_updated and not gitignore_done:
+            print("  -> .gitignore 已加入 rules/ 和 project/")
+            gitignore_done = True
     print(f"\n完成：{len(results)} 个语言。")
     return 0
 

@@ -19,6 +19,28 @@ class InstallResult:
     project_path: Path
     rules_written: bool
     project_written: bool  # 仅首次创建时为 True
+    gitignore_updated: bool = False  # 是否更新了项目 .gitignore
+
+
+def _ensure_gitignore(project_root: Path) -> bool:
+    """把 rules/ 和 project/ 加入项目 .gitignore，返回是否有变更。"""
+    gitignore = project_root / ".gitignore"
+    entries = ["rules/", "project/"]
+
+    if gitignore.exists():
+        existing = gitignore.read_text(encoding="utf-8").splitlines()
+        existing_set = {line.strip() for line in existing if line.strip()}
+        missing = [e for e in entries if e not in existing_set]
+        if not missing:
+            return False
+        with gitignore.open("a", encoding="utf-8") as f:
+            f.write("\n# conv 生成的规则目录\n" + "\n".join(missing) + "\n")
+        return True
+    else:
+        gitignore.write_text(
+            "# conv 生成的规则目录\nrules/\nproject/\n", encoding="utf-8"
+        )
+        return True
 
 
 def _version_header(lang: str, version: str) -> str:
@@ -67,8 +89,11 @@ def install_language(
         if not project_path.exists():
             project_path.write_text(project_template(lang), encoding="utf-8")
             project_written = True
+
+        gitignore_updated = _ensure_gitignore(project_root)
     else:
         project_written = not project_path.exists()
+        gitignore_updated = not (project_root / ".gitignore").exists()
 
     return InstallResult(
         lang=lang,
@@ -77,6 +102,7 @@ def install_language(
         project_path=project_path,
         rules_written=True,
         project_written=project_written,
+        gitignore_updated=gitignore_updated,
     )
 
 

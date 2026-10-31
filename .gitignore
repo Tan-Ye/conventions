@@ -1,0 +1,8 @@
+﻿node_modules/
+*.log
+/build
+/conv.*
+
+# conv 生成的规则目录
+rules/
+project/

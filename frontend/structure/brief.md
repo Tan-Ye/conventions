@@ -24,6 +24,7 @@
 | 18 | 深路径用别名 | `@/services/order` |
 | 19 | props 用 interface | `interface OrderListProps {}` |
 | 20 | 组件 200–300 行 | 超了拆子组件 |
+| 21 | 列表 key 不用 index | `key={item.id}` |
 
 ## 目录总览
 
