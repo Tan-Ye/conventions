@@ -1,0 +1,23 @@
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "conv"
+version = "0.1.0"
+description = "代码规范安装器：把通用规则装到项目的 rules/，项目特有规则放 project/"
+readme = "README.md"
+requires-python = ">=3.9"
+authors = [{ name = "conv" }]
+license = { text = "MIT" }
+
+[project.scripts]
+conv = "conv.cli:main"
+
+[tool.setuptools]
+# 包名 conv 映射到当前目录（代码和文档都在根目录，无嵌套 conv/ 子目录）
+package-dir = { "conv" = "." }
+packages = ["conv"]
+
+[tool.setuptools.package-data]
+conv = ["python/**/*.md", "sql/**/*.md", "frontend/**/*.md"]
