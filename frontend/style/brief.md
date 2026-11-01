@@ -23,7 +23,7 @@
 | 1 | Tailwind 项目不用 CSS Module | 复杂动画/伪元素用 SCSS |
 | 2 | 颜色走 theme | `bg-primary`，不写 `bg-[#1677ff]` |
 | 3 | 间距用 spacing scale | `p-4`、`gap-3` |
-| 4 | 多类用 clsx 分组 | `clsx('flex gap-2', isOpen && 'block')` |
+| 4 | 多类用 cn 分组 | `cn('flex gap-2', isOpen && 'block')` |
 | 5 | 响应式前缀，移动端优先 | `sm:` `md:` `lg:` |
 | 6 | 状态用前缀 | `hover:bg-primary` `disabled:opacity-50` |
 | 7 | @apply 只提取复用组 | 多处重复才用 |

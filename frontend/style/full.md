@@ -132,19 +132,22 @@ Tailwind 默认 1 单位 = 4px，`p-4` = 16px，`gap-3` = 12px，天然符合"�
 <div className="p-[13px] gap-[6px]" />
 ```
 
-## 11. 多类用 clsx 分组
+## 11. 多类用 cn 分组
 
-类名较多或有条件时，用 `clsx` 分组，避免一长串字符串影响阅读：
+类名较多或有条件时，用 `cn` 分组，避免一长串字符串影响阅读。`cn` 是 shadcn-ui 的封装（`twMerge` + `clsx`），除了条件拼接，还能自动解决 Tailwind 类冲突（如 `'p-2 p-4'` 只保留 `p-4`）：
 
 ```tsx
-import clsx from 'clsx'
+import { cn } from '@/lib/utils'
 
 // ✅ 分组清晰
-<div className={clsx(
+<div className={cn(
   'flex items-center gap-2',
   isOpen && 'bg-white shadow',
   disabled ? 'opacity-50' : 'hover:bg-primary'
 )} />
+
+// ✅ cn 自动去重冲突类（clsx 做不到，会输出 'p-2 p-4' 靠顺序碰运气）
+<Button className="p-4" />  // 内部 'p-2' 与传入 'p-4' 冲突时保留 p-4
 
 // ✗ 一长串难读
 <div className={`flex items-center gap-2 ${isOpen ? 'bg-white shadow' : ''} ${disabled ? 'opacity-50' : 'hover:bg-primary'}`} />

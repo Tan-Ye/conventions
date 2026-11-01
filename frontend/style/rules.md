@@ -19,7 +19,7 @@
 1. Tailwind 项目页面用工具类，不写 CSS Module；复杂动画、伪元素用 SCSS。CSS Module / Less / SCSS 项目不引入 Tailwind。
 2. 颜色走 `theme.extend.colors`，禁止硬编码 hex；禁止 `bg-[#xxx]` 任意值。
 3. 间距用 spacing scale（`p-4`、`gap-3`，1 单位 = 4px）；禁止 `p-[13px]`，非标值扩展 `theme.spacing`。
-4. 多个工具类用 `clsx` 分组；类太多影响阅读时用 `clsx` 拆分。
+4. 多个工具类用 `cn`（shadcn-ui 封装：`twMerge` + `clsx`）分组；类太多影响阅读时用 `cn` 拆分。
 5. 响应式用断点前缀（`sm:` `md:` `lg:`），移动端优先；断点在 `theme.screens` 定义。
 6. 交互状态用前缀（`hover:` `focus:` `active:` `disabled:`），不写伪类 CSS。
 7. `@apply` 只用于提取多处复用的工具类组；单处不 `@apply`。
