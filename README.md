@@ -103,7 +103,7 @@ pip install .
 - **系统目录拒绝运行**：在 `C:\Windows`、`Program Files` 等系统目录执行会报错退出。
 - **版本头**：`conv/rules/*.md` 首行标注 `conv` 版本、安装日期、来源文档，方便溯源。
 - **剔除引用行**：写入 `conv/rules/` 时自动删除指向 brief/full/project 等文件的交叉引用句，避免安装后死链（详见"安装"一节）。
-- **不进 git**：安装时自动把 `conv/` 加入项目 `.gitignore`。
+- **`conv/` 应提交进 git**：`conv/rules/` 是团队共用的通用规范，`conv/project/` 是项目自有规则，都要随代码库走，别人克隆后即可直接使用，无需重装。
 - **`--dry-run`**：`install` / `update` 加此参数只打印将要写入的文件，不落盘。
 
 ## 示例

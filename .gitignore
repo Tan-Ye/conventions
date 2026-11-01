@@ -5,6 +5,6 @@ __pycache__/
 *.pyc
 *.pyo
 
-# conv install 生成的规则目录（不应提交）
-conv/
 
+# conv 生成的规则目录
+conv/
