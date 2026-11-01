@@ -1,6 +1,7 @@
 """安装与更新逻辑：把内置文档写入项目的 rules/，初始化 project/ 模板。"""
 from __future__ import annotations
 
+import re
 from dataclasses import dataclass
 from datetime import date
 from pathlib import Path
@@ -43,6 +44,27 @@ def _ensure_gitignore(project_root: Path) -> bool:
         return True
 
 
+def _strip_reference_lines(content: str) -> str:
+    """剔除指向其他 .md 文档的引用句。
+
+    brief.md / full.md / rules.md 之间、以及指向 project/ 的交叉引用，
+    只在 conventions 仓库内有效；安装后项目里只有单份文件，引用会变成死链。
+    按句剔除（以 。 分句），保留同句中不含链接的内容。
+    """
+    lines: List[str] = []
+    for raw in content.splitlines():
+        if ".md)" not in raw:
+            lines.append(raw)
+            continue
+        sentences = re.split(r"(?<=。)", raw)
+        kept = "".join(s for s in sentences if ".md)" not in s).rstrip()
+        if kept.strip():
+            lines.append(kept)
+    result = "\n".join(lines) + ("\n" if content.endswith("\n") else "")
+    # 删除整行后可能留下连续空行，压缩回一个
+    return re.sub(r"\n{3,}", "\n\n", result)
+
+
 def _version_header(lang: str, version: str) -> str:
     """rules/ 文件顶部的版本头，标明来源。"""
     today = date.today().isoformat()
@@ -80,7 +102,7 @@ def install_language(
         rules_dir.mkdir(parents=True, exist_ok=True)
         project_dir.mkdir(parents=True, exist_ok=True)
 
-        content = src.read_text(encoding="utf-8")
+        content = _strip_reference_lines(src.read_text(encoding="utf-8"))
         rules_path.write_text(
             _version_header(lang, version) + content, encoding="utf-8"
         )

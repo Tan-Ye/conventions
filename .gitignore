@@ -6,3 +6,7 @@
 # conv 生成的规则目录
 /rules
 /project
+
+# conv 生成的规则目录
+rules/
+project/

@@ -1,6 +1,6 @@
 # SQL 规范 · 完整版
 
-**适用范围**：所有手写的 SQL 和 DDL。项目特有的补充见 [project/sql.md](../../project/sql.md)。
+**适用范围**：所有手写的 SQL 和 DDL。项目特有的补充见 [project/sql.md](../project/sql.md)。
 只有规则看 [rules.md](rules.md)，规则加示例看 [brief.md](brief.md)。
 
 ---

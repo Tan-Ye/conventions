@@ -71,9 +71,11 @@ pip install .
 |---|---|
 | `conv` 可执行文件 | Python 的 `Scripts` 目录（如 `...\Python\Python3xx\Scripts\conv.exe`） |
 | 工具代码 + 内置文档 | Python 的 `site-packages\conv\` |
-| 内置 md 文档 | `site-packages\conv\data\` 下 12 份（4 语言 × 3 版本） |
+| 内置 md 文档 | `site-packages\conv\` 下 12 份（4 语言 × 3 版本，即 `python\`、`sql\`、`frontend\` 子目录） |
 
-> 若 `conv` 不在 PATH，把 Python 的 `Scripts` 目录加入系统 PATH。
+> `pip install .` 会自动把 Python 的 `Scripts` 目录加入用户 PATH，**重开终端**后 `conv` 即可全局使用。
+
+> **安装时引用行会被剔除**：仓库内的文档头部有指向兄弟文件的交叉引用（如"要示例看 brief.md，要理由看 full.md"、"项目特有约定见 project/xxx.md"）。这些链接只在 conventions 仓库内有效——安装到项目后只有单份 `rules/<语言>.md`，引用会变成死链。因此 `conv install` / `conv update` 写入时会自动删除含 `.md` 链接的引用句，保留"适用范围"等无链接内容。仓库内的源文档保持原样不受影响。
 
 ## 命令
 
@@ -99,6 +101,7 @@ pip install .
 - **`update` 不碰 `project/`**：只更新 `rules/`，保护用户写的项目规则。
 - **系统目录拒绝运行**：在 `C:\Windows`、`Program Files` 等系统目录执行会报错退出。
 - **版本头**：`rules/*.md` 首行标注 `conv` 版本、安装日期、来源文档，方便溯源。
+- **剔除引用行**：写入 `rules/` 时自动删除指向 brief/full/project 等文件的交叉引用句，避免安装后死链（详见"安装"一节）。
 - **`--dry-run`**：`install` / `update` 加此参数只打印将要写入的文件，不落盘。
 
 ## 示例

@@ -1,6 +1,6 @@
 # Python 规范 · 完整版
 
-**适用范围**：所有 Python 代码。项目特有的补充见 [project/python.md](../../project/python.md)。
+**适用范围**：所有 Python 代码。项目特有的补充见 [project/python.md](../project/python.md)。
 只有规则看 [rules.md](rules.md)，规则加示例看 [brief.md](brief.md)。
 
 ---

@@ -1,6 +1,6 @@
 # 组件与目录规范 · 完整版
 
-**适用范围**：目录划分、模块边界、导出方式、组件拆分。样式相关见 [../style/full.md](../style/full.md)，项目特有约定见 [project/frontend.md](../../../project/frontend.md)。
+**适用范围**：目录划分、模块边界、导出方式、组件拆分。样式相关见 [../style/full.md](../style/full.md)，项目特有约定见 [project/frontend-structure.md](../../project/frontend-structure.md)。
 
 **目标**：任何一个文件都能在 10 秒内找到它该在哪；改一个模块时，能明确知道影响范围不会扩散。
 
