@@ -28,6 +28,7 @@
 | 6 | 状态用前缀 | `hover:bg-primary` `disabled:opacity-50` |
 | 7 | @apply 只提取复用组 | 多处重复才用 |
 | 8 | 多主题用 theme，禁 dark: | 深色也是主题 |
+| 9 | shadcn 组件拼成项目级基础组件 | 不同用途用默认导出组件拼接 |
 
 ## 通用（两者均适用）
 
