@@ -1,15 +1,21 @@
-"""安装与更新逻辑：把内置文档写入项目的 rules/，初始化 project/ 模板。"""
+"""安装与更新逻辑：把内置文档写入项目的 conv/rules/，初始化 conv/project/ 模板。"""
 from __future__ import annotations
 
 import re
 from dataclasses import dataclass
 from datetime import date
 from pathlib import Path
-from typing import List, Optional
+from typing import List, Optional, Tuple
 
 from . import __version__
 from .paths import LANGUAGES, bundled_doc
 from .templates import project_template
+
+
+def installed_dirs(project_root: Path) -> Tuple[Path, Path]:
+    """返回 (rules 目录, project 目录)，均在项目根的 conv/ 下。"""
+    conv_dir = project_root / "conv"
+    return conv_dir / "rules", conv_dir / "project"
 
 
 @dataclass
@@ -24,22 +30,21 @@ class InstallResult:
 
 
 def _ensure_gitignore(project_root: Path) -> bool:
-    """把 rules/ 和 project/ 加入项目 .gitignore，返回是否有变更。"""
+    """把 conv/ 加入项目 .gitignore，返回是否有变更。"""
     gitignore = project_root / ".gitignore"
-    entries = ["rules/", "project/"]
+    entry = "conv/"
 
     if gitignore.exists():
         existing = gitignore.read_text(encoding="utf-8").splitlines()
         existing_set = {line.strip() for line in existing if line.strip()}
-        missing = [e for e in entries if e not in existing_set]
-        if not missing:
+        if entry in existing_set:
             return False
         with gitignore.open("a", encoding="utf-8") as f:
-            f.write("\n# conv 生成的规则目录\n" + "\n".join(missing) + "\n")
+            f.write("\n# conv 生成的规则目录\n" + entry + "\n")
         return True
     else:
         gitignore.write_text(
-            "# conv 生成的规则目录\nrules/\nproject/\n", encoding="utf-8"
+            "# conv 生成的规则目录\n" + entry + "\n", encoding="utf-8"
         )
         return True
 
@@ -81,10 +86,10 @@ def install_language(
     *,
     dry_run: bool = False,
 ) -> InstallResult:
-    """安装一门语言的规则到 project_root/rules/<lang>.md。
+    """安装一门语言的规则到 project_root/conv/rules/<lang>.md。
 
-    - 覆盖 rules/<lang>.md（用户同意重复执行覆盖）
-    - 若 project/<lang>.md 不存在则创建模板，存在则不动
+    - 覆盖 conv/rules/<lang>.md（用户同意重复执行覆盖）
+    - 若 conv/project/<lang>.md 不存在则创建模板，存在则不动
     """
     if lang not in LANGUAGES:
         raise ValueError(f"未知语言: {lang}")
@@ -93,8 +98,7 @@ def install_language(
     if not src.exists():
         raise FileNotFoundError(f"内置文档缺失: {src}")
 
-    rules_dir = project_root / "rules"
-    project_dir = project_root / "project"
+    rules_dir, project_dir = installed_dirs(project_root)
     rules_path = rules_dir / f"{lang}.md"
     project_path = project_dir / f"{lang}.md"
 
@@ -134,13 +138,13 @@ def update_installed(
     *,
     dry_run: bool = False,
 ) -> List[InstallResult]:
-    """更新 project_root/rules/ 下已装的规则。
+    """更新 project_root/conv/rules/ 下已装的规则。
 
-    - 不传 lang：扫描 rules/*.md，按文件名匹配内置语言逐一覆盖
+    - 不传 lang：扫描 conv/rules/*.md，按文件名匹配内置语言逐一覆盖
     - 传 lang：只更新该语言
-    - 不碰 project/ 目录
+    - 不碰 conv/project/ 目录
     """
-    rules_dir = project_root / "rules"
+    rules_dir, _ = installed_dirs(project_root)
     if not rules_dir.exists():
         return []
 

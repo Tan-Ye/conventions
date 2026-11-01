@@ -7,7 +7,12 @@ from pathlib import Path
 from typing import List, Optional, Sequence
 
 from . import __version__
-from .installer import InstallResult, install_language, update_installed
+from .installer import (
+    InstallResult,
+    installed_dirs,
+    install_language,
+    update_installed,
+)
 from .paths import (
     LANGUAGES,
     bundled_doc,
@@ -64,10 +69,10 @@ def cmd_install(args: argparse.Namespace) -> int:
         proj = "  + 新建 project 模板" if r.project_written else "  = project 已存在，未改动"
         print(
             f"[install] {r.lang} ({r.version}){action}\n"
-            f"  -> rules/{r.lang}.md\n{proj}"
+            f"  -> conv/rules/{r.lang}.md\n{proj}"
         )
         if r.gitignore_updated and not gitignore_done:
-            print("  -> .gitignore 已加入 rules/ 和 project/")
+            print("  -> .gitignore 已加入 conv/")
             gitignore_done = True
     print(f"\n完成：{len(results)} 个语言。")
     return 0
@@ -81,7 +86,7 @@ def cmd_update(args: argparse.Namespace) -> int:
     results = update_installed(cwd, lang, dry_run=args.dry_run)
 
     if not results:
-        rules_dir = cwd / "rules"
+        rules_dir, _ = installed_dirs(cwd)
         if not rules_dir.exists():
             print(f"未找到 rules/ 目录: {rules_dir}")
             print("先执行 `conv install <lang>` 安装规则。")
@@ -91,7 +96,7 @@ def cmd_update(args: argparse.Namespace) -> int:
 
     for r in results:
         action = "（dry-run）" if args.dry_run else ""
-        print(f"[update] {r.lang}{action} -> rules/{r.lang}.md")
+        print(f"[update] {r.lang}{action} -> conv/rules/{r.lang}.md")
     print(f"\n完成：{len(results)} 个语言已更新。")
     return 0
 
@@ -105,7 +110,7 @@ def cmd_list(args: argparse.Namespace) -> int:
     print("  frontend   安装 frontend-structure + frontend-style")
 
     cwd = Path.cwd()
-    rules_dir = cwd / "rules"
+    rules_dir, _ = installed_dirs(cwd)
     if rules_dir.exists():
         installed = sorted(p.stem for p in rules_dir.glob("*.md"))
         if installed:
@@ -127,16 +132,15 @@ def cmd_info(args: argparse.Namespace) -> int:
         print(f"  {item}")
 
     cwd = Path.cwd()
-    rules_dir = cwd / "rules"
-    project_dir = cwd / "project"
+    rules_dir, project_dir = installed_dirs(cwd)
     if rules_dir.exists() or project_dir.exists():
         print(f"\n当前项目 ({cwd}):")
         if rules_dir.exists():
             installed = sorted(p.name for p in rules_dir.glob("*.md"))
-            print(f"  rules/   {len(installed)} 个文件: {', '.join(installed)}")
+            print(f"  conv/rules/   {len(installed)} 个文件: {', '.join(installed)}")
         if project_dir.exists():
             pfiles = sorted(p.name for p in project_dir.glob("*.md"))
-            print(f"  project/ {len(pfiles)} 个文件: {', '.join(pfiles)}")
+            print(f"  conv/project/ {len(pfiles)} 个文件: {', '.join(pfiles)}")
     else:
         print(f"\n当前目录 ({cwd}) 尚未安装任何规则。")
     return 0

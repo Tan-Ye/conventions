@@ -1,12 +1,10 @@
-﻿node_modules/
-*.log
-/build
-/conv.*
+﻿# Python 构建产物
+build/
+*.egg-info/
+__pycache__/
+*.pyc
+*.pyo
 
-# conv 生成的规则目录
-/rules
-/project
+# conv install 生成的规则目录（不应提交）
+conv/
 
-# conv 生成的规则目录
-rules/
-project/
